@@ -1,5 +1,5 @@
+import functools
 import inspect
-from functools import lru_cache
 
 import astroid
 
@@ -12,7 +12,7 @@ def print_statements_transform(node):
         return astroid.parse(f'print("{node_str}"); {node_str}', apply_transforms=False)
 
 
-@lru_cache(maxsize=None)
+@functools.lru_cache(maxsize=None)
 def _register_once(node_type, transformer, predicate=None):
     astroid.MANAGER.register_transform(node_type, transformer, predicate=predicate)
 
@@ -27,7 +27,12 @@ def annotate_function(func):
     code = compile(root.as_string(), func.__code__.co_filename, 'exec')
     namespace = {}
     exec(code, namespace)
-    return lambda *args, **kwargs: namespace[func.__name__](*args, **kwargs)
+
+    @functools.wraps(func)
+    def _wrapped(*args, **kwargs):
+        return namespace[func.__name__](*args, **kwargs)
+
+    return _wrapped
 
 
 @annotate_function
