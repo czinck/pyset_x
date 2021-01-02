@@ -12,7 +12,7 @@ setuptools.setup(
     long_description=long_description,
     long_description_content_type='text/markdown',
     url='https://github.com/czinck/pyset_x',
-    packages=setuptools.find_packages(),
+    packages=setuptools.find_packages(include=['pyset_x', 'pyset_x.*']),
     classifiers=[
     'Programming Language :: Python :: 3',
     'License :: OSI Approved :: MIT License',
