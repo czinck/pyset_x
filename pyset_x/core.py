@@ -1,3 +1,4 @@
+import copy
 import functools
 import inspect
 
@@ -18,6 +19,7 @@ def _register_once(node_type, transformer, predicate=None):
 
 
 def annotate_function(func):
+    calling_frame = inspect.stack()[1].frame
     source_lines = inspect.getsource(func).splitlines()[1:]  # Skip decorator line
     for node_type in astroid.ALL_NODE_CLASSES:
         if node_type.is_statement:
@@ -25,7 +27,8 @@ def annotate_function(func):
 
     root = astroid.parse('\n'.join(source_lines))
     code = compile(root.as_string(), func.__code__.co_filename, 'exec')
-    namespace = {}
+    namespace = copy.copy(calling_frame.f_globals)
+    namespace.update(copy.copy(calling_frame.f_locals))
     exec(code, namespace)
 
     @functools.wraps(func)
