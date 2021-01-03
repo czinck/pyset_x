@@ -5,7 +5,7 @@ with open('README.md', 'r', encoding='utf-8') as fh:
 
 setuptools.setup(
     name='pyset_x',
-    version='0.0.1',
+    version='0.0.2',
     author='Christian Zinck',
     author_email='christian.zinck@gmail.com',
     description='Like `set -x` in bash',
